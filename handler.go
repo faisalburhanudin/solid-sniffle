@@ -6,17 +6,9 @@ import (
 	"html"
 )
 
-type User struct {
-	id       int
-	username string
-}
-
-type UserRepository interface {
-	Save(user User)
-}
 
 type UserHandler struct {
-	userRepository UserRepository
+	userRepository UserApi
 }
 
 // register handler
