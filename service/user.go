@@ -14,7 +14,7 @@ type EmailChecker interface {
 }
 
 type UserSaver interface {
-	Save(user *domain.User) *domain.User
+	Save(user *domain.User)
 }
 
 type UserGetter interface {
@@ -33,16 +33,16 @@ var ErrorEmailUsed = errors.New("Email sudah terpakai")
 var ErrorUserNotFound = errors.New("User not found")
 
 // Register new user
-func (service UserService) Register(user *domain.User) (error) {
+func (service UserService) Register(user *domain.User) error {
 	// Check username used
-	UsernameUsed := service.usernameChecker.IsUsed(user.Username)
-	if UsernameUsed == true {
+	usernameUsed := service.usernameChecker.IsUsed(user.Username)
+	if usernameUsed == true {
 		return ErrorUsernameUsed
 	}
 
 	// Check email user
-	EmailUsed := service.emailChecker.IsUsed(user.Email)
-	if EmailUsed == true {
+	emailUsed := service.emailChecker.IsUsed(user.Email)
+	if emailUsed == true {
 		return ErrorEmailUsed
 	}
 
