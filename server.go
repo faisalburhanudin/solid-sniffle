@@ -43,9 +43,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Create handler
-	//userHandler := &handler.UserHandler{UserService: &userService}
-
 	// Register handler
 	mux := http.NewServeMux()
 	mux.HandleFunc("/register", userHandler.Register)
