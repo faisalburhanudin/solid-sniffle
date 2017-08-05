@@ -5,9 +5,13 @@ import (
 	"github.com/faisalburhanudin/solid-sniffle/domain"
 )
 
-type mockForumSaver struct{}
+type mockForumSaver struct{
+	idChange int
+}
 
-func (mock mockForumSaver) Save(forum *domain.Forum){}
+func (mock mockForumSaver) Save(forum *domain.Forum){
+	forum.Id = mock.idChange
+}
 
 type mockForumNameChecker struct {
 	isUsedReturn bool
@@ -20,9 +24,13 @@ func (mock mockForumNameChecker) IsUsed(forumName string) bool {
 func TestForumService_Create(t *testing.T) {
 	forumService := ForumService{
 		forumNameChecker: mockForumNameChecker{isUsedReturn:false},
-		forumSaver: mockForumSaver{},
+		forumSaver: mockForumSaver{idChange:1},
 	}
-	forumService.Create(&domain.Forum{})
+	forum := domain.Forum{}
+	forumService.Create(&forum)
+	if forum.Id != 1 {
+		t.Errorf("got: %v, want: %v.", forum.Id, 1)
+	}
 }
 
 

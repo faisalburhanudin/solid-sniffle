@@ -21,16 +21,16 @@ type UserGetter interface {
 	Get(user domain.User) *domain.User
 }
 
+var ErrorUsernameUsed = errors.New("Username sudah terpakai")
+var ErrorEmailUsed = errors.New("Email sudah terpakai")
+var ErrorUserNotFound = errors.New("User not found")
+
 type UserService struct {
 	usernameChecker UsernameChecker
 	emailChecker    EmailChecker
 	userSaver       UserSaver
 	userGetter      UserGetter
 }
-
-var ErrorUsernameUsed = errors.New("Username sudah terpakai")
-var ErrorEmailUsed = errors.New("Email sudah terpakai")
-var ErrorUserNotFound = errors.New("User not found")
 
 // Register new user
 func (service UserService) Register(user *domain.User) error {
