@@ -1,7 +1,8 @@
-package main
+package service
 
 import (
 	"testing"
+	"github.com/faisalburhanudin/solid-sniffle/domain"
 )
 
 type mockUsernameChecker struct {
@@ -13,10 +14,10 @@ func (check mockUsernameChecker) IsUsed(username string) bool {
 }
 
 func TestUserService_RegisterUsernameUsed(t *testing.T) {
-	service := UserApi{
+	userService := UserService{
 		usernameChecker: mockUsernameChecker{isUsedReturn: true},
 	}
-	_, err := service.Register(User{})
+	err := userService.Register(&domain.User{})
 	if err != ErrorUsernameUsed {
 		t.Errorf("got: %v, want: %v.", err, ErrorUsernameUsed)
 	}
@@ -31,11 +32,11 @@ func (check mockEmailChecker) IsUsed(email string) bool {
 }
 
 func TestUserService_RegisterEmailUser(t *testing.T) {
-	service := UserApi{
+	userService := UserService{
 		usernameChecker: mockUsernameChecker{isUsedReturn: false},
 		emailChecker: mockEmailChecker{isUsedReturn: true},
 	}
-	_, err := service.Register(User{})
+	err := userService.Register(&domain.User{})
 	if err != ErrorEmailUsed {
 		t.Errorf("got: %v, want: %v.", err, ErrorEmailUsed)
 	}

@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"fmt"
 	"html"
+	"github.com/faisalburhanudin/solid-sniffle/service"
 )
 
 
 type UserHandler struct {
-	userRepository UserApi
+	userRepository service.UserService
 }
 
 // register handler

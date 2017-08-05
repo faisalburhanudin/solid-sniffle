@@ -1,6 +1,9 @@
-package main
+package service
 
-import "errors"
+import (
+	"errors"
+	"github.com/faisalburhanudin/solid-sniffle/domain"
+)
 
 type UsernameChecker interface {
 	IsUsed(username string) bool
@@ -11,10 +14,10 @@ type EmailChecker interface {
 }
 
 type UserSaver interface {
-	Save(user User) User
+	Save(user *domain.User) *domain.User
 }
 
-type UserApi struct {
+type UserService struct {
 	usernameChecker UsernameChecker
 	emailChecker    EmailChecker
 	userSaver       UserSaver
@@ -24,21 +27,21 @@ var ErrorUsernameUsed = errors.New("Username sudah terpakai")
 var ErrorEmailUsed = errors.New("Email sudah terpakai")
 
 // Register new user
-func (service UserApi) Register(user User) (User, error) {
+func (service UserService) Register(user *domain.User) (error) {
 	// Check username used
-	UsernameUsed := service.usernameChecker.IsUsed(user.username)
+	UsernameUsed := service.usernameChecker.IsUsed(user.Username)
 	if UsernameUsed == true {
-		return User{}, ErrorUsernameUsed
+		return ErrorUsernameUsed
 	}
 
 	// Check email user
-	EmailUsed := service.emailChecker.IsUsed(user.email)
+	EmailUsed := service.emailChecker.IsUsed(user.Email)
 	if EmailUsed == true {
-		return User{}, ErrorEmailUsed
+		return ErrorEmailUsed
 	}
 
 	// Save user
 	service.userSaver.Save(user)
 
-	return user, nil
+	return nil
 }
