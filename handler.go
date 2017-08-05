@@ -12,8 +12,8 @@ type UserHandler struct {
 	userRepository service.UserService
 }
 
-// register handler
-func (handler *UserHandler) register(w http.ResponseWriter, r *http.Request) {
+// Register handler
+func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		register(w, r)
 		return
@@ -28,7 +28,7 @@ func (handler *UserHandler) register(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// register save user register
+// Register save user Register
 func register(w http.ResponseWriter, r *http.Request){
 	username := r.FormValue("username")
 	email := r.FormValue("email")
@@ -46,7 +46,7 @@ func register(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-// registerView render html form register
+// registerView render html form Register
 func registerView(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 }

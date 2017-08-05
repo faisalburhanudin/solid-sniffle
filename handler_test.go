@@ -8,11 +8,11 @@ import (
 )
 
 func TestUserHandler(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, "http://localhost/register", nil)
+	req := httptest.NewRequest(http.MethodPost, "http://localhost/Register", nil)
 	w := httptest.NewRecorder()
 
 	userHandler := UserHandler{}
-	userHandler.register(w, req)
+	userHandler.Register(w, req)
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
