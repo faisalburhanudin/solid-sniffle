@@ -9,7 +9,6 @@ import (
 	"github.com/faisalburhanudin/solid-sniffle/service"
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
-	"github.com/urfave/negroni"
 	"net/http"
 	"time"
 )
@@ -44,21 +43,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Register handler
-	mux := http.NewServeMux()
-	mux.HandleFunc("/register", userHandler.Register)
-	mux.HandleFunc("/users", userHandler.ListUser)
+	// register routing
+	routing := map[string]func(rw http.ResponseWriter, r *http.Request){
+		"/register": userHandler.Register,
+		"/users":    userHandler.ListUser,
+	}
 
-	// Create middleware
-	middle := negroni.New()
-	middle.UseHandler(mux)
-	// write request log
-	middle.UseFunc(httpLog)
+	mux := http.NewServeMux()
+	for url, handlerFunc := range routing {
+		mux.HandleFunc(url, httpLog(handlerFunc))
+	}
 
 	// Build server
 	srv := http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
-		Handler: middle,
+		Handler: mux,
 	}
 
 	// Running server
@@ -66,15 +65,14 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-
-func httpLog(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	before := time.Now()
-
-	next(rw, r)
-
-	log.WithFields(log.Fields{
-		"method": r.Method,
-		"endpoint": r.URL.Path,
-		"duration": time.Since(before),
-	}).Info("request")
+func httpLog(h http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		before := time.Now()
+		h.ServeHTTP(w, r)
+		log.WithFields(log.Fields{
+			"method":   r.Method,
+			"endpoint": r.URL.Path,
+			"duration": time.Since(before),
+		}).Info("request")
+	})
 }

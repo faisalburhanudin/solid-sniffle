@@ -22,11 +22,6 @@
 			"Rev": "181d419aa9e2223811b824e8f0b4af96f9ba9302"
 		},
 		{
-			"ImportPath": "github.com/urfave/negroni",
-			"Comment": "v0.2.0-127-g3444e69",
-			"Rev": "3444e69ea1ef03a77998d11fc56e7f0a34f7213c"
-		},
-		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
 			"Rev": "42ff06aea7c329876e5a0fe94acc96902accf0ad"
 		},
