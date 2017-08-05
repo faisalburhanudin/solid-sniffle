@@ -1,15 +1,15 @@
 package service
 
 import (
-	"testing"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
+	"testing"
 )
 
-type mockForumSaver struct{
+type mockForumSaver struct {
 	idChange int
 }
 
-func (mock mockForumSaver) Save(forum *domain.Forum){
+func (mock mockForumSaver) Save(forum *domain.Forum) {
 	forum.Id = mock.idChange
 }
 
@@ -23,8 +23,8 @@ func (mock mockForumNameChecker) IsUsed(forumName string) bool {
 
 func TestForumService_Create(t *testing.T) {
 	forumService := ForumService{
-		forumNameChecker: mockForumNameChecker{isUsedReturn:false},
-		forumSaver: mockForumSaver{idChange:1},
+		forumNameChecker: mockForumNameChecker{isUsedReturn: false},
+		forumSaver:       mockForumSaver{idChange: 1},
 	}
 	forum := domain.Forum{}
 	forumService.Create(&forum)
@@ -33,11 +33,10 @@ func TestForumService_Create(t *testing.T) {
 	}
 }
 
-
 func TestForumService_CreateNameUsed(t *testing.T) {
 	forumService := ForumService{
-		forumNameChecker: mockForumNameChecker{isUsedReturn:true},
-		forumSaver: mockForumSaver{},
+		forumNameChecker: mockForumNameChecker{isUsedReturn: true},
+		forumSaver:       mockForumSaver{},
 	}
 	err := forumService.Create(&domain.Forum{})
 	if err != ErrorForumNameUsed {

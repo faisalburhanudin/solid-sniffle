@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/faisalburhanudin/solid-sniffle/domain"
 	"errors"
+	"github.com/faisalburhanudin/solid-sniffle/domain"
 )
 
 type ForumNameChecker interface {
@@ -15,7 +15,7 @@ type ForumSaver interface {
 
 type ForumService struct {
 	forumNameChecker ForumNameChecker
-	forumSaver ForumSaver
+	forumSaver       ForumSaver
 }
 
 var ErrorForumNameUsed = errors.New("forum name used")

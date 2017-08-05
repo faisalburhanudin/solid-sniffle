@@ -1,8 +1,8 @@
 package service
 
 import (
-	"testing"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
+	"testing"
 )
 
 type mockPostSaver struct{}

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"testing"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
+	"testing"
 )
 
 type mockUsernameChecker struct {
@@ -46,15 +46,15 @@ type mockUserGetter struct {
 	userReturn *domain.User
 }
 
-func (mock mockUserGetter) Get(user domain.User) *domain.User  {
+func (mock mockUserGetter) Get(user domain.User) *domain.User {
 	return mock.userReturn
 }
 
 func TestUserService_Get_NotFound(t *testing.T) {
 	UserService := UserService{
-		userGetter:mockUserGetter{userReturn:nil},
+		userGetter: mockUserGetter{userReturn: nil},
 	}
-	_, err := UserService.Get(domain.User{Username:"faisal"})
+	_, err := UserService.Get(domain.User{Username: "faisal"})
 	if err != ErrorUserNotFound {
 		t.Errorf("got: %v, want: %v.", err, ErrorUserNotFound)
 	}
@@ -65,9 +65,9 @@ func TestUserService_Get(t *testing.T) {
 		Username: "faisal",
 	}
 	UserService := UserService{
-		userGetter:mockUserGetter{userReturn:&want},
+		userGetter: mockUserGetter{userReturn: &want},
 	}
-	got, _:= UserService.Get(domain.User{Username:"faisal"})
+	got, _ := UserService.Get(domain.User{Username: "faisal"})
 	if got != &want {
 		t.Errorf("got: %v, want: %v.", got, want)
 	}

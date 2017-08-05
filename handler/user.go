@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"net/http"
 	"fmt"
-	"html"
 	"github.com/faisalburhanudin/solid-sniffle/service"
+	"html"
+	"net/http"
 )
-
 
 type UserHandler struct {
 	userRepository service.UserService
@@ -29,7 +28,7 @@ func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 // Register save user Register
-func register(w http.ResponseWriter, r *http.Request){
+func register(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	email := r.FormValue("email")
 
@@ -40,13 +39,13 @@ func register(w http.ResponseWriter, r *http.Request){
 	}
 
 	// email is mandatory
-	if email == ""{
+	if email == "" {
 		http.Error(w, "Email harus di isi", http.StatusBadRequest)
 		return
 	}
 }
 
 // registerView render html form Register
-func registerView(w http.ResponseWriter, r *http.Request){
+func registerView(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 }

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/http"
-	log "github.com/sirupsen/logrus"
 	"fmt"
-	"github.com/urfave/negroni"
 	"github.com/faisalburhanudin/solid-sniffle/handler"
+	log "github.com/sirupsen/logrus"
+	"github.com/urfave/negroni"
+	"net/http"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 
 	// Build server
 	srv := http.Server{
-		Addr: fmt.Sprintf(":%s", port),
+		Addr:    fmt.Sprintf(":%s", port),
 		Handler: middle,
 	}
 
@@ -34,6 +34,6 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func LogRequest(_ http.ResponseWriter, r *http.Request)  {
+func LogRequest(_ http.ResponseWriter, r *http.Request) {
 	log.WithFields(log.Fields{"method": r.Method, "endpoint": r.URL.Path}).Info("request")
 }
