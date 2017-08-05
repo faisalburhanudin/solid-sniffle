@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/faisalburhanudin/solid-sniffle/domain"
 	"testing"
+	"reflect"
 )
 
 type mockUsernameChecker struct {
@@ -42,6 +43,27 @@ func TestUserService_RegisterEmailUser(t *testing.T) {
 	}
 }
 
+type mockUserSaver struct {
+	userId int
+}
+
+func (mock mockUserSaver) Save(user *domain.User) {
+	user.Id = mock.userId
+}
+
+func TestUserService_Register(t *testing.T) {
+	userService := UserService{
+		usernameChecker: mockUsernameChecker{isUsedReturn: false},
+		emailChecker:    mockEmailChecker{isUsedReturn: false},
+		userSaver:       mockUserSaver{userId: 1},
+	}
+	user := domain.User{}
+	userService.Register(&user)
+	if user.Id != 1 {
+		t.Errorf("got: %v, want: %v.", user.Id, 1)
+	}
+}
+
 type mockUserGetter struct {
 	userReturn *domain.User
 }
@@ -69,6 +91,29 @@ func TestUserService_Get(t *testing.T) {
 	}
 	got, _ := UserService.Get(domain.User{Username: "faisal"})
 	if got != &want {
+		t.Errorf("got: %v, want: %v.", got, want)
+	}
+}
+
+type mockUserAllGetter struct {
+	usersReturn []*domain.User
+}
+
+func (mock mockUserAllGetter) Get () []*domain.User {
+	return mock.usersReturn
+}
+
+func TestUserService_Gets(t *testing.T) {
+	want := []*domain.User{
+		{Username:"user1"},
+		{Username:"user1"},
+		{Username:"user1"},
+	}
+	UserService := UserService{
+		UserAllGetter: mockUserAllGetter{},
+	}
+	got := UserService.Gets()
+	if reflect.DeepEqual(got, want) {
 		t.Errorf("got: %v, want: %v.", got, want)
 	}
 }
