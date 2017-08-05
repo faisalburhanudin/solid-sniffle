@@ -1,36 +1,50 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"github.com/facebookgo/inject"
+	"github.com/faisalburhanudin/solid-sniffle/database"
 	"github.com/faisalburhanudin/solid-sniffle/handler"
+	"github.com/faisalburhanudin/solid-sniffle/service"
+	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 	"net/http"
-	"github.com/faisalburhanudin/solid-sniffle/service"
-	"github.com/faisalburhanudin/solid-sniffle/database"
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 	port := "8000"
+
 	// Build DB
 	db, err := sql.Open("mysql", "solid:pass@/solid")
 	if err != nil {
 		log.Error(err)
 	}
 
-	userDB := database.UserDB{
-		Db: db,
+	var g inject.Graph
+	var userDB database.UserDB
+	var userService service.UserService
+	var userHandler handler.UserHandler
+
+	// Inject singleton object
+	err = g.Provide(
+		&inject.Object{Value: &userDB},
+		&inject.Object{Value: &userService},
+		&inject.Object{Value: &userHandler},
+		&inject.Object{Value: db},
+	)
+	if err != nil {
+		log.Panic(err)
 	}
 
-	// Build service
-	userService := service.UserService{
-		UserAllGetter: userDB,
+	// Populate dependencies graph
+	if err := g.Populate(); err != nil {
+		log.Fatal(err)
 	}
 
 	// Create handler
-	userHandler := &handler.UserHandler{UserService: &userService}
+	//userHandler := &handler.UserHandler{UserService: &userService}
 
 	// Register handler
 	mux := http.NewServeMux()
@@ -39,8 +53,11 @@ func main() {
 
 	// Create middleware
 	middle := negroni.New()
-	middle.UseHandlerFunc(LogRequest)
 	middle.UseHandler(mux)
+	// write request log
+	middle.UseHandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
+		log.WithFields(log.Fields{"method": r.Method, "endpoint": r.URL.Path}).Info("request")
+	})
 
 	// Build server
 	srv := http.Server{
@@ -51,8 +68,4 @@ func main() {
 	// Running server
 	log.WithFields(log.Fields{"port": port}).Info("HTTP Server running")
 	log.Fatal(srv.ListenAndServe())
-}
-
-func LogRequest(_ http.ResponseWriter, r *http.Request) {
-	log.WithFields(log.Fields{"method": r.Method, "endpoint": r.URL.Path}).Info("request")
 }

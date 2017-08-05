@@ -1,13 +1,13 @@
 package database
 
 import (
-	"log"
 	"database/sql"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
+	"log"
 )
 
 type UserDB struct {
-	Db *sql.DB
+	Db *sql.DB `inject:""`
 }
 
 func (udb UserDB) Get() []*domain.User {

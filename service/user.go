@@ -34,7 +34,7 @@ type UserService struct {
 	emailChecker    EmailChecker
 	userSaver       UserSaver
 	userGetter      UserGetter
-	UserAllGetter   UserAllGetter
+	UserAllGetter   UserAllGetter `inject:""`
 }
 
 // Register new user

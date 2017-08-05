@@ -8,7 +8,7 @@ import (
 )
 
 type UserHandler struct {
-	UserService *service.UserService
+	UserService *service.UserService `inject:""`
 }
 
 // Register handler
