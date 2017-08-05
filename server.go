@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -52,9 +53,7 @@ func main() {
 	middle := negroni.New()
 	middle.UseHandler(mux)
 	// write request log
-	middle.UseHandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
-		log.WithFields(log.Fields{"method": r.Method, "endpoint": r.URL.Path}).Info("request")
-	})
+	middle.UseFunc(httpLog)
 
 	// Build server
 	srv := http.Server{
@@ -65,4 +64,17 @@ func main() {
 	// Running server
 	log.WithFields(log.Fields{"port": port}).Info("HTTP Server running")
 	log.Fatal(srv.ListenAndServe())
+}
+
+
+func httpLog(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	before := time.Now()
+
+	next(rw, r)
+
+	log.WithFields(log.Fields{
+		"method": r.Method,
+		"endpoint": r.URL.Path,
+		"duration": time.Since(before),
+	}).Info("request")
 }
