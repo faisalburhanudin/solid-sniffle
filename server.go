@@ -5,13 +5,14 @@ import (
 	log "github.com/sirupsen/logrus"
 	"fmt"
 	"github.com/urfave/negroni"
+	"github.com/faisalburhanudin/solid-sniffle/handler"
 )
 
 func main() {
 	port := "8000"
 
 	// Create handler
-	userHandler := UserHandler{}
+	userHandler := handler.UserHandler{}
 
 	// Register handler
 	mux := http.NewServeMux()
