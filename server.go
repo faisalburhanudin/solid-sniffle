@@ -49,6 +49,7 @@ func main() {
 		"/users":    userHandler.ListUser,
 	}
 
+	// create mux and wrapping middleware
 	mux := http.NewServeMux()
 	for url, handlerFunc := range routing {
 		mux.HandleFunc(url, httpLog(handlerFunc))

@@ -3,12 +3,17 @@ package handler
 import (
 	"fmt"
 	"github.com/faisalburhanudin/solid-sniffle/service"
-	"html"
 	"net/http"
+	"html/template"
+	"log"
 )
 
 type UserHandler struct {
 	UserService *service.UserService `inject:""`
+}
+
+type RegisterPage struct {
+	Action string
 }
 
 // Register handler
@@ -30,7 +35,13 @@ func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else if r.Method == "GET" {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+		t, err := template.ParseFiles("template/register.html")
+		if err != nil {
+			log.Panic(err)
+		}
+
+		page := RegisterPage{Action: "/register"}
+		t.Execute(w, &page)
 		return
 	}
 
