@@ -2,10 +2,11 @@ package handler
 
 import (
 	"fmt"
+	"github.com/faisalburhanudin/solid-sniffle/domain"
 	"github.com/faisalburhanudin/solid-sniffle/service"
-	"net/http"
 	"html/template"
 	"log"
+	"net/http"
 )
 
 type UserHandler struct {
@@ -20,6 +21,7 @@ type RegisterPage struct {
 func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		username := r.FormValue("username")
+		password := r.FormValue("password")
 		email := r.FormValue("email")
 
 		// username is mandatory
@@ -33,6 +35,21 @@ func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Email harus di isi", http.StatusBadRequest)
 			return
 		}
+
+		// Password is mandatory
+		if password == "" {
+			http.Error(w, "Email harus di isi", http.StatusBadRequest)
+			return
+		}
+
+		// Save user
+		user := domain.User{
+			Username: username,
+			Password: password,
+			Email:    email,
+		}
+		handler.UserService.Register(&user)
+		return
 
 	} else if r.Method == "GET" {
 		t, err := template.ParseFiles("template/register.html")

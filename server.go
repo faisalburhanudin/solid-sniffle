@@ -23,14 +23,14 @@ func main() {
 	}
 
 	var g inject.Graph
-	var userDB database.UserDB
-	var userService service.UserService
 	var userHandler handler.UserHandler
 
 	// Inject singleton object
 	err = g.Provide(
-		&inject.Object{Value: &userDB},
-		&inject.Object{Value: &userService},
+		&inject.Object{Value: &database.UserAllGetter{}},
+		&inject.Object{Value: &database.UsernameChecker{}},
+		&inject.Object{Value: &database.UserSaver{}},
+		&inject.Object{Value: &service.UserService{}},
 		&inject.Object{Value: &userHandler},
 		&inject.Object{Value: db},
 	)

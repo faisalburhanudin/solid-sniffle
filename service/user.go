@@ -30,36 +30,36 @@ var ErrorEmailUsed = errors.New("Email sudah terpakai")
 var ErrorUserNotFound = errors.New("User not found")
 
 type UserService struct {
-	usernameChecker UsernameChecker
-	emailChecker    EmailChecker
-	userSaver       UserSaver
-	userGetter      UserGetter
+	UsernameChecker UsernameChecker `inject:""`
+	EmailChecker    EmailChecker    `inject:""`
+	UserSaver       UserSaver       `inject:""`
+	UserGetter      UserGetter
 	UserAllGetter   UserAllGetter `inject:""`
 }
 
 // Register new user
 func (service *UserService) Register(user *domain.User) error {
 	// Check username used
-	usernameUsed := service.usernameChecker.IsUsed(user.Username)
+	usernameUsed := service.UsernameChecker.IsUsed(user.Username)
 	if usernameUsed == true {
 		return ErrorUsernameUsed
 	}
 
 	// Check email user
-	emailUsed := service.emailChecker.IsUsed(user.Email)
+	emailUsed := service.EmailChecker.IsUsed(user.Email)
 	if emailUsed == true {
 		return ErrorEmailUsed
 	}
 
 	// Save user
-	service.userSaver.Save(user)
+	service.UserSaver.Save(user)
 
 	return nil
 }
 
 // Get single user get user by username
 func (service *UserService) Get(userFilter domain.User) (*domain.User, error) {
-	user := service.userGetter.Get(userFilter)
+	user := service.UserGetter.Get(userFilter)
 	if user == nil {
 		return nil, ErrorUserNotFound
 	}
