@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/faisalburhanudin/solid-sniffle/domain"
-	"reflect"
 	"testing"
 )
 
@@ -10,7 +9,7 @@ type mockUsernameChecker struct {
 	isUsedReturn bool
 }
 
-func (check mockUsernameChecker) IsUsed(username string) bool {
+func (check mockUsernameChecker) IsUsernameUsed(username string) bool {
 	return check.isUsedReturn
 }
 
@@ -28,7 +27,7 @@ type mockEmailChecker struct {
 	isUsedReturn bool
 }
 
-func (check mockEmailChecker) IsUsed(email string) bool {
+func (check mockEmailChecker) IsEmailUsed(email string) bool {
 	return check.isUsedReturn
 }
 
@@ -68,18 +67,8 @@ type mockUserGetter struct {
 	userReturn *domain.User
 }
 
-func (mock mockUserGetter) Get(user domain.User) *domain.User {
+func (mock mockUserGetter) GetByUsername(username string) *domain.User {
 	return mock.userReturn
-}
-
-func TestUserService_Get_NotFound(t *testing.T) {
-	UserService := UserService{
-		UserGetter: mockUserGetter{userReturn: nil},
-	}
-	_, err := UserService.Get(domain.User{Username: "faisal"})
-	if err != ErrorUserNotFound {
-		t.Errorf("got: %v, want: %v.", err, ErrorUserNotFound)
-	}
 }
 
 func TestUserService_Get(t *testing.T) {
@@ -87,33 +76,50 @@ func TestUserService_Get(t *testing.T) {
 		Username: "faisal",
 	}
 	UserService := UserService{
-		UserGetter: mockUserGetter{userReturn: &want},
+		UserGetterByUsername: mockUserGetter{userReturn: &want},
 	}
-	got, _ := UserService.Get(domain.User{Username: "faisal"})
-	if got != &want {
+	got := UserService.GetByUsername("faisal")
+	if got != want {
 		t.Errorf("got: %v, want: %v.", got, want)
 	}
 }
 
-type mockUserAllGetter struct {
-	usersReturn []*domain.User
+type mockUserDeleter struct {
+	isCalled bool
 }
 
-func (mock mockUserAllGetter) Get() []*domain.User {
-	return mock.usersReturn
+func (mock *mockUserDeleter) Delete(user domain.User) {
+	mock.isCalled = true
 }
 
-func TestUserService_Gets(t *testing.T) {
-	want := []*domain.User{
-		{Username: "user1"},
-		{Username: "user1"},
-		{Username: "user1"},
+func TestUserService_Delete(t *testing.T) {
+	mock := mockUserDeleter{}
+	userService := UserService{
+		UserDeleter: &mock,
 	}
-	UserService := UserService{
-		UserAllGetter: mockUserAllGetter{},
+	userService.Delete(domain.User{})
+	if mock.isCalled != true {
+		t.Errorf("got: %v, want: %v.", mock.isCalled, true)
 	}
-	got := UserService.Gets()
-	if reflect.DeepEqual(got, want) {
-		t.Errorf("got: %v, want: %v.", got, want)
+}
+
+type mockUserUpdater struct {
+	userReturn domain.User
+}
+
+func (mock mockUserUpdater) Update(userId int, user domain.User) domain.User {
+	return mock.userReturn
+}
+
+func TestUserService_Update(t *testing.T) {
+	userReturn := domain.User{}
+
+	mock := mockUserUpdater{userReturn: userReturn}
+	userService := UserService{
+		UserUpdater: mock,
+	}
+	user := userService.Update(1, domain.User{})
+	if user != userReturn {
+		t.Errorf("got: %v, want: %v.", user, userReturn)
 	}
 }
