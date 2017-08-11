@@ -8,11 +8,22 @@ type PostSaver interface {
 	Save(post *domain.Post)
 }
 
-type PostService struct {
-	postSaver PostSaver
+type PostDeleter interface {
+	Delete(post domain.Post)
 }
 
-func (service PostService) Create(post *domain.Post) error {
-	service.postSaver.Save(post)
-	return nil
+// PostService using for inject dependencies via interface
+type PostService struct {
+	PostSaver   PostSaver
+	PostDeleter PostDeleter
+}
+
+// Create new post
+func (s PostService) Create(post *domain.Post) {
+	s.PostSaver.Save(post)
+}
+
+// Delete post in application
+func (s PostService) Delete(post domain.Post) {
+	s.PostDeleter.Delete(post)
 }
