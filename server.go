@@ -1,79 +1,59 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	"github.com/facebookgo/inject"
-	"github.com/faisalburhanudin/solid-sniffle/database"
-	"github.com/faisalburhanudin/solid-sniffle/handler"
-	"github.com/faisalburhanudin/solid-sniffle/service"
-	_ "github.com/go-sql-driver/mysql"
-	log "github.com/sirupsen/logrus"
 	"net/http"
-	"time"
+	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
-func main() {
-	port := "8000"
+// signature for function wrapper
+type HttpWrapper func(h http.HandlerFunc) http.HandlerFunc
 
-	// Build DB
-	db, err := sql.Open("mysql", "solid:pass@/solid")
-	if err != nil {
-		log.Error(err)
-	}
+// signature for endpoint routing
+// ex: "/user":funcHandler
+type Routing map[string]http.HandlerFunc
 
-	var g inject.Graph
-	var userHandler handler.UserHandler
-
-	// Inject singleton object
-	err = g.Provide(
-		&inject.Object{Value: &database.UserAllGetter{}},
-		&inject.Object{Value: &database.UsernameChecker{}},
-		&inject.Object{Value: &database.UserSaver{}},
-		&inject.Object{Value: &service.UserService{}},
-		&inject.Object{Value: &userHandler},
-		&inject.Object{Value: db},
-	)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	// Populate dependencies graph
-	if err := g.Populate(); err != nil {
-		log.Fatal(err)
-	}
-
-	// register routing
-	routing := map[string]func(rw http.ResponseWriter, r *http.Request){
-		"/register": userHandler.Register,
-		"/users":    userHandler.ListUser,
-	}
-
-	// create mux and wrapping middleware
-	mux := http.NewServeMux()
-	for url, handlerFunc := range routing {
-		mux.HandleFunc(url, httpLog(handlerFunc))
-	}
-
-	// Build server
-	srv := http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
-		Handler: mux,
-	}
-
-	// Running server
-	log.WithFields(log.Fields{"port": port}).Info("HTTP Server running")
-	log.Fatal(srv.ListenAndServe())
+// A Server defines parameters for running an HTTP server.
+type Server struct {
+	port   int
+	mux    *http.ServeMux
 }
 
-func httpLog(h http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		before := time.Now()
-		h.ServeHTTP(w, r)
-		log.WithFields(log.Fields{
-			"method":   r.Method,
-			"endpoint": r.URL.Path,
-			"duration": time.Since(before),
-		}).Info("request")
-	})
+// NewServer allocates and return Server
+// this will assign logger, port,
+// register routing who pointed endpoint and function handler,
+// wrapper handler fox example using for middleware
+func NewServer(port int, routing Routing, wrapper []HttpWrapper) *Server {
+	server := &Server{
+		mux:    http.NewServeMux(),
+		port:   port,
+	}
+
+	// Register handler function and endpoint to mux
+	for url, handlerFunc := range routing {
+		// for each handler wrap with wrapper provide
+		for _, w := range wrapper {
+			handlerFunc = w(handlerFunc)
+		}
+
+		// finally register to mux
+		server.mux.HandleFunc(url, handlerFunc)
+	}
+
+	return server
+}
+
+// ListenAndServe listens on the TCP network address srv.Addr
+func (s *Server) ListenAndServe() {
+	// format address with port
+	addr := fmt.Sprintf("localhost:%d", s.port)
+
+	// Create server handler
+	srv := http.Server{
+		Addr:    addr,
+		Handler: s.mux,
+	}
+
+	// listen port and serve
+	log.Fatal(srv.ListenAndServe())
 }
