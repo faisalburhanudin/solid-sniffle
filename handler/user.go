@@ -1,11 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
 	"github.com/faisalburhanudin/solid-sniffle/service"
-	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -13,63 +10,69 @@ type UserHandler struct {
 	UserService *service.UserService `inject:""`
 }
 
-type RegisterPage struct {
-	Action string
+func (h UserHandler) User(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		// Show all user
+		h.Gets(w, r)
+	case "POST":
+		// Create new user
+		h.Create(w, r)
+	case "PUT":
+		// Update user
+		h.Update(w, r)
+	case "DELETE":
+		// Delete user
+		h.Delete(w, r)
+	default:
+		http.Error(w, "Method nt allowed", http.StatusMethodNotAllowed)
+	}
 }
 
-// Register handler
-func (handler *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		username := r.FormValue("username")
-		password := r.FormValue("password")
-		email := r.FormValue("email")
+// Create new user
+// will return error if username
+func (h UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 
-		// username is mandatory
-		if username == "" {
-			http.Error(w, "Username harus di isi", http.StatusBadRequest)
-			return
-		}
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+	email := r.FormValue("email")
 
-		// email is mandatory
-		if email == "" {
-			http.Error(w, "Email harus di isi", http.StatusBadRequest)
-			return
-		}
-
-		// Password is mandatory
-		if password == "" {
-			http.Error(w, "Email harus di isi", http.StatusBadRequest)
-			return
-		}
-
-		// Save user
-		user := domain.User{
-			Username: username,
-			Password: password,
-			Email:    email,
-		}
-		handler.UserService.Register(&user)
-		return
-
-	} else if r.Method == "GET" {
-		t, err := template.ParseFiles("template/register.html")
-		if err != nil {
-			log.Panic(err)
-		}
-
-		page := RegisterPage{Action: "/register"}
-		t.Execute(w, &page)
+	// username is mandatory
+	if username == "" {
+		http.Error(w, "Username harus di isi", http.StatusBadRequest)
 		return
 	}
 
-	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	// email is mandatory
+	if email == "" {
+		http.Error(w, "Email harus di isi", http.StatusBadRequest)
+		return
+	}
+
+	// Password is mandatory
+	if password == "" {
+		http.Error(w, "Email harus di isi", http.StatusBadRequest)
+		return
+	}
+
+	// Save user
+	user := domain.User{
+		Username: username,
+		Password: password,
+		Email:    email,
+	}
+	h.UserService.Register(&user)
 	return
 }
 
-func (handler *UserHandler) ListUser(w http.ResponseWriter, r *http.Request) {
-	users := handler.UserService.Gets()
-	for _, user := range users {
-		fmt.Fprintf(w, "username: %s", user.Username)
-	}
-	return
+func (h UserHandler) Gets(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h UserHandler) Update(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
+
 }

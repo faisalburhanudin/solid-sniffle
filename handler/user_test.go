@@ -12,7 +12,7 @@ func TestUserHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	userHandler := UserHandler{}
-	userHandler.Register(w, req)
+	userHandler.Create(w, req)
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)

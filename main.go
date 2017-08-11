@@ -56,8 +56,7 @@ func main() {
 
 	// register routing
 	routing := Routing{
-		"/register": userHandler.Register,
-		"/users":    userHandler.ListUser,
+		"/user":    userHandler.User,
 	}
 
 	wrapper := []HttpWrapper{
