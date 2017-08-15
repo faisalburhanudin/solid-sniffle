@@ -10,6 +10,12 @@ type UserHandler struct {
 	UserService *service.UserService `inject:""`
 }
 
+// NewUserHandler create instance UserHandler
+func NewUserHandler(userService *service.UserService) *UserHandler {
+	return &UserHandler{UserService: userService}
+}
+
+// User root handler
 func (h UserHandler) User(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
