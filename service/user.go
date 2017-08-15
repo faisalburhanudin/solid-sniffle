@@ -37,12 +37,21 @@ var ErrorEmailUsed = errors.New("Email sudah terpakai")
 
 // UserService used for inject interface to use in receiver
 type UserService struct {
-	UsernameChecker      UsernameChecker `inject:""`
-	EmailChecker         EmailChecker    `inject:""`
-	UserSaver            UserSaver       `inject:""`
-	UserGetterByUsername UserGetterByUsername
-	UserDeleter          UserDeleter
-	UserUpdater          UserUpdater
+	UsernameChecker      UsernameChecker      `inject:""`
+	EmailChecker         EmailChecker         `inject:""`
+	UserSaver            UserSaver            `inject:""`
+	UserGetterByUsername UserGetterByUsername `inject:""`
+	UserDeleter          UserDeleter          `inject:""`
+	UserUpdater          UserUpdater          `inject:""`
+}
+
+type UserRepository interface {
+	UsernameChecker
+	EmailChecker
+	UserSaver
+	UserGetterByUsername
+	UserDeleter
+	UserUpdater
 }
 
 // Register new user

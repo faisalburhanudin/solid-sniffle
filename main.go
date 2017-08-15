@@ -8,8 +8,8 @@ import (
 	"github.com/faisalburhanudin/solid-sniffle/service"
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
-	"time"
 	"net/http"
+	"time"
 )
 
 func httpLog(h http.HandlerFunc) http.HandlerFunc {
@@ -34,15 +34,23 @@ func main() {
 	}
 
 	var g inject.Graph
-	var userService service.UserService
-	userHandler := handler.NewUserHandler(&userService)
+	var postHandler handler.PostHandler
+	var userHandler handler.UserHandler
 
 	// Inject singleton object
 	err = g.Provide(
 		&inject.Object{Value: &database.UserAllGetter{}},
 		&inject.Object{Value: &database.UsernameChecker{}},
+		&inject.Object{Value: &database.EmailChecker{}},
 		&inject.Object{Value: &database.UserSaver{}},
-		&inject.Object{Value: &userService},
+		&inject.Object{Value: &database.UserGetterByUsername{}},
+
+		&inject.Object{Value: &service.UserService{}},
+		&inject.Object{Value: &service.PostService{}},
+
+		&inject.Object{Value: &postHandler},
+		&inject.Object{Value: &userHandler},
+
 		&inject.Object{Value: db},
 	)
 	if err != nil {
@@ -51,12 +59,13 @@ func main() {
 
 	// Populate dependencies graph
 	if err := g.Populate(); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	// register routing
 	routing := Routing{
-		"/user":    userHandler.User,
+		"/":     postHandler.List,
+		"/user": userHandler.User,
 	}
 
 	wrapper := []HttpWrapper{

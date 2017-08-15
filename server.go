@@ -1,9 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 // signature for function wrapper
@@ -15,8 +15,8 @@ type Routing map[string]http.HandlerFunc
 
 // A Server defines parameters for running an HTTP server.
 type Server struct {
-	port   int
-	mux    *http.ServeMux
+	port int
+	mux  *http.ServeMux
 }
 
 // NewServer allocates and return Server
@@ -25,8 +25,8 @@ type Server struct {
 // wrapper handler fox example using for middleware
 func NewServer(port int, routing Routing, wrapper []HttpWrapper) *Server {
 	server := &Server{
-		mux:    http.NewServeMux(),
-		port:   port,
+		mux:  http.NewServeMux(),
+		port: port,
 	}
 
 	// Register handler function and endpoint to mux
@@ -55,5 +55,6 @@ func (s *Server) ListenAndServe() {
 	}
 
 	// listen port and serve
+	log.Infof("listen on %v", addr)
 	log.Fatal(srv.ListenAndServe())
 }

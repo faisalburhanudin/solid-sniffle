@@ -12,7 +12,7 @@ func (mock mockPostSaver) Save(post *domain.Post) {
 }
 
 func TestPostService_Create(t *testing.T) {
-	postService := PostService{postSaver: mockPostSaver{}}
+	postService := PostService{PostSaver: mockPostSaver{}}
 	post := domain.Post{}
 	postService.Create(&post)
 	if post.Id != 1 {
