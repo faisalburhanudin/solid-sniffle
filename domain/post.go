@@ -2,6 +2,6 @@ package domain
 
 type Post struct {
 	Id     int
-	text   string
+	Text   string
 	UserId int
 }

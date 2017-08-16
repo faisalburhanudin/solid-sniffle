@@ -34,7 +34,12 @@ func main() {
 	}
 
 	var g inject.Graph
-	var postHandler handler.PostHandler
+	postDb := database.NewPostDb(db)
+
+	postService := service.NewPostService(postDb)
+
+	postHandler := handler.NewPostHandler(postService)
+
 	var userHandler handler.UserHandler
 
 	// Inject singleton object
@@ -44,11 +49,7 @@ func main() {
 		&inject.Object{Value: &database.EmailChecker{}},
 		&inject.Object{Value: &database.UserSaver{}},
 		&inject.Object{Value: &database.UserGetterByUsername{}},
-
 		&inject.Object{Value: &service.UserService{}},
-		&inject.Object{Value: &service.PostService{}},
-
-		&inject.Object{Value: &postHandler},
 		&inject.Object{Value: &userHandler},
 
 		&inject.Object{Value: db},

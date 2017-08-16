@@ -1,21 +1,30 @@
 package handler
 
 import (
-	"github.com/faisalburhanudin/solid-sniffle/service"
+	"github.com/faisalburhanudin/solid-sniffle/domain"
 	"html/template"
 	"net/http"
 )
 
-type PostHandler struct {
-	PostService *service.PostService `inject:""`
+type PostGetter interface {
+	GetPosts() []domain.Post
 }
 
-// List display post
+type PostHandler struct {
+	PostGetter PostGetter `inject:""`
+}
+
+func NewPostHandler(postGetter PostGetter) *PostHandler {
+	return &PostHandler{PostGetter: postGetter}
+}
+
+// List write post data to html response writer
 func (h PostHandler) List(w http.ResponseWriter, r *http.Request) {
+	posts := h.PostGetter.GetPosts()
 	paths := []string{
 		"templates/front-base.tmpl",
 		"templates/post-list.tmpl",
 	}
 	tmpl := template.Must(template.ParseFiles(paths...))
-	tmpl.Execute(w, nil)
+	tmpl.Execute(w, posts)
 }
