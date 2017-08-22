@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"github.com/gorilla/mux"
 )
 
 // signature for function wrapper

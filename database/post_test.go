@@ -2,14 +2,14 @@
 package database
 
 import (
-	"testing"
-	"flag"
 	"database/sql"
-	"reflect"
+	"flag"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
+	"reflect"
 	"strings"
+	"testing"
 )
 
 var dsn = flag.String("dsn", "solid:pass@tcp(127.0.0.1:3307)/solidtest", "database source name for testing")

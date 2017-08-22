@@ -64,7 +64,7 @@ func main() {
 	}
 
 	// register routing
-	var routing = []Routing {
+	var routing = []Routing{
 		{"/", postHandler.List, []string{"GET"}},
 		{"/user", userHandler.User, []string{"GET", "POST"}},
 	}
