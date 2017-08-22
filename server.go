@@ -4,6 +4,7 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"github.com/gorilla/mux"
 )
 
 // signature for function wrapper
@@ -11,36 +12,40 @@ type HttpWrapper func(h http.HandlerFunc) http.HandlerFunc
 
 // signature for endpoint routing
 // ex: "/user":funcHandler
-type Routing map[string]http.HandlerFunc
+type Routing struct {
+	Endpoint string
+	Handler  http.HandlerFunc
+	Method   []string
+}
 
 // A Server defines parameters for running an HTTP server.
 type Server struct {
 	port int
-	mux  *http.ServeMux
+	mux  *mux.Router
 }
 
 // NewServer allocates and return Server
 // this will assign logger, port,
 // register routing who pointed endpoint and function handler,
 // wrapper handler fox example using for middleware
-func NewServer(port int, routing Routing, wrapper []HttpWrapper) *Server {
-	server := &Server{
-		mux:  http.NewServeMux(),
-		port: port,
-	}
+func NewServer(port int, routing []Routing, wrapper []HttpWrapper) *Server {
+	m := mux.NewRouter()
 
 	// Register handler function and endpoint to mux
-	for url, handlerFunc := range routing {
+	for _, route := range routing {
 		// for each handler wrap with wrapper provide
 		for _, w := range wrapper {
-			handlerFunc = w(handlerFunc)
+			route.Handler = w(route.Handler)
 		}
 
 		// finally register to mux
-		server.mux.HandleFunc(url, handlerFunc)
+		m.HandleFunc(route.Endpoint, route.Handler).Methods(route.Method...)
 	}
 
-	return server
+	return &Server{
+		mux:  m,
+		port: port,
+	}
 }
 
 // ListenAndServe listens on the TCP network address srv.Addr

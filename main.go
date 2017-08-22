@@ -64,9 +64,9 @@ func main() {
 	}
 
 	// register routing
-	routing := Routing{
-		"/":     postHandler.List,
-		"/user": userHandler.User,
+	var routing = []Routing {
+		{"/", postHandler.List, []string{"GET"}},
+		{"/user", userHandler.User, []string{"GET", "POST"}},
 	}
 
 	wrapper := []HttpWrapper{
