@@ -33,6 +33,11 @@ func main() {
 		log.Error(err)
 	}
 
+	// Check mysql connection
+	if err := db.Ping(); err != nil {
+		log.Fatalf("Cannot connect to mysql: %v", err)
+	}
+
 	var g inject.Graph
 	postDb := database.NewPostDb(db)
 
