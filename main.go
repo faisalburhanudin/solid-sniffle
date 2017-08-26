@@ -25,7 +25,7 @@ func httpLog(h http.HandlerFunc) http.HandlerFunc {
 }
 
 func main() {
-	port := 8000
+	addr := ":8000"
 
 	// Build DB
 	db, err := sql.Open("mysql", "solid:pass@/solid")
@@ -78,6 +78,9 @@ func main() {
 		httpLog,
 	}
 
-	srv := NewServer(port, routing, wrapper)
-	srv.ListenAndServe()
+	srv := NewServer(routing, wrapper)
+	fs := http.FileServer(http.Dir("./static"))
+	srv.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+
+	http.ListenAndServe(addr, srv)
 }

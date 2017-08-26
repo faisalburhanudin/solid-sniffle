@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -18,17 +16,11 @@ type Routing struct {
 	Method   []string
 }
 
-// A Server defines parameters for running an HTTP server.
-type Server struct {
-	port int
-	mux  *mux.Router
-}
-
 // NewServer allocates and return Server
 // this will assign logger, port,
 // register routing who pointed endpoint and function handler,
 // wrapper handler fox example using for middleware
-func NewServer(port int, routing []Routing, wrapper []HttpWrapper) *Server {
+func NewServer(routing []Routing, wrapper []HttpWrapper) *mux.Router {
 	m := mux.NewRouter()
 
 	// Register handler function and endpoint to mux
@@ -42,24 +34,5 @@ func NewServer(port int, routing []Routing, wrapper []HttpWrapper) *Server {
 		m.HandleFunc(route.Endpoint, route.Handler).Methods(route.Method...)
 	}
 
-	return &Server{
-		mux:  m,
-		port: port,
-	}
-}
-
-// ListenAndServe listens on the TCP network address srv.Addr
-func (s *Server) ListenAndServe() {
-	// format address with port
-	addr := fmt.Sprintf("localhost:%d", s.port)
-
-	// Create server handler
-	srv := http.Server{
-		Addr:    addr,
-		Handler: s.mux,
-	}
-
-	// listen port and serve
-	log.Infof("listen on %v", addr)
-	log.Fatal(srv.ListenAndServe())
+	return m
 }

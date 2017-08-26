@@ -1,35 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
-          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Skeleton - Free Bulma template</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/static/css/solid.min.css">
 </head>
-<body>
-<div class="container-fluid" style="margin-top: 5px">
-    <div class="row">
-        <div class="col-md-10">
-            {{template "content"}}
-        </div>
-        <div class="col-md-2">
 
+<body>
+<nav class="nav has-shadow" id="top">
+    <div class="container">
+        <div class="nav-left">
+            <a class="nav-item" href="">
+                <img src="images/bulma.png" alt="Description">
+            </a>
+        </div>
+
+        <div class="nav-right nav-menu">
+            <a class="nav-item">
+                <form>
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input class="input" type="text" placeholder="">
+                        </div>
+
+                        <div class="control">
+                            <button class="button is-primary">
+                        <span class="icon">
+                            <i class="fa fa-search"></i>
+                          </span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </a>
+            <a class="nav-item is-tab">
+                Login
+            </a>
         </div>
     </div>
-</div>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
-        integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
-        crossorigin="anonymous"></script>
+</nav>
+<section class="section">
+    <div class="container content">
+        <article class="media">
+            <figure class="media-left">
+                <p class="image is-64x64">
+                    <img src="http://bulma.io/images/placeholders/128x128.png">
+                </p>
+            </figure>
+            <div class="media-content">
+                <div class="content">
+                    <figure class="image is-128x128">
+                        <img src="http://bulma.io/images/placeholders/128x128.png">
+                    </figure>
+                    <p>
+                        <strong>John Smith</strong>
+                        <small>@johnsmith</small>
+                        <small>31m</small>
+                        <br> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu
+                        pellentesque tortor
+                        vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
+                    </p>
+                </div>
+                <nav class="level is-mobile">
+                    <div class="level-left">
+                        <a class="level-item">
+                            <span class="icon is-small"><i class="fa fa-reply"></i></span>
+                        </a>
+                        <a class="level-item">
+                            <span class="icon is-small"><i class="fa fa-retweet"></i></span>
+                        </a>
+                        <a class="level-item">
+                            <span class="icon is-small"><i class="fa fa-heart"></i></span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+            <div class="media-right">
+                <button class="delete"></button>
+            </div>
+        </article>
+    </div>
+</section>
 </body>
+
 </html>

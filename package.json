@@ -1,0 +1,27 @@
+{
+  "name": "solid-sniffle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faisalburhanudin/solid-sniffle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/faisalburhanudin/solid-sniffle/issues"
+  },
+  "homepage": "https://github.com/faisalburhanudin/solid-sniffle#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat-css": "^2.3.0",
+    "gulp-minify-css": "^1.2.4"
+  },
+  "dependencies": {
+    "bulma": "^0.5.1"
+  }
+}
