@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
+	"github.com/faisalburhanudin/solid-sniffle/templates"
 )
 
 func httpLog(h http.HandlerFunc) http.HandlerFunc {
@@ -43,7 +44,7 @@ func main() {
 
 	postService := service.NewPostService(postDb)
 
-	postHandler := handler.NewPostHandler(postService)
+	postHandler := handler.NewPostHandler(postService, templates.TemplateDir())
 
 	var userHandler handler.UserHandler
 

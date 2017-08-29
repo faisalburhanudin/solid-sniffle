@@ -11,19 +11,20 @@ type PostGetter interface {
 }
 
 type PostHandler struct {
-	PostGetter PostGetter `inject:""`
+	TemplateDir string
+	PostGetter  PostGetter
 }
 
-func NewPostHandler(postGetter PostGetter) *PostHandler {
-	return &PostHandler{PostGetter: postGetter}
+func NewPostHandler(postGetter PostGetter, templateDir string) *PostHandler {
+	return &PostHandler{PostGetter: postGetter, TemplateDir: templateDir}
 }
 
 // List write post data to html response writer
 func (h PostHandler) List(w http.ResponseWriter, r *http.Request) {
 	posts := h.PostGetter.GetPosts()
 	paths := []string{
-		"templates/front-base.tmpl",
-		"templates/post-list.tmpl",
+		h.TemplateDir + "/front-base.tmpl",
+		h.TemplateDir + "/post-list.tmpl",
 	}
 	tmpl := template.Must(template.ParseFiles(paths...))
 	tmpl.Execute(w, posts)
