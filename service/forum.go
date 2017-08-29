@@ -20,7 +20,7 @@ type ForumService struct {
 
 var ErrorForumNameUsed = errors.New("forum name used")
 
-// Create new form
+// Register new form
 func (service ForumService) Create(forum *domain.Forum) error {
 	// Check forum name used
 	isNameUsed := service.forumNameChecker.IsUsed(forum.Name)

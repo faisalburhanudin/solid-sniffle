@@ -2,12 +2,19 @@ package handler
 
 import (
 	"github.com/faisalburhanudin/solid-sniffle/domain"
-	"github.com/faisalburhanudin/solid-sniffle/service"
 	"net/http"
 )
 
+type UserRegisterer interface {
+	Register(user *domain.User) error
+}
+
 type UserHandler struct {
-	UserService *service.UserService `inject:""`
+	UserRegisterer
+}
+
+func NewUserHandler(registerer UserRegisterer) *UserHandler {
+	return &UserHandler{registerer}
 }
 
 // User root handler
@@ -17,8 +24,8 @@ func (h UserHandler) User(w http.ResponseWriter, r *http.Request) {
 		// Show all user
 		h.Gets(w, r)
 	case "POST":
-		// Create new user
-		h.Create(w, r)
+		// Register new user
+		h.Register(w, r)
 	case "PUT":
 		// Update user
 		h.Update(w, r)
@@ -30,9 +37,9 @@ func (h UserHandler) User(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Create new user
+// Register new user
 // will return error if username
-func (h UserHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
@@ -62,7 +69,7 @@ func (h UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		Password: password,
 		Email:    email,
 	}
-	h.UserService.Register(&user)
+	h.UserRegisterer.Register(&user)
 	return
 }
 

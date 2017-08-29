@@ -14,7 +14,7 @@ func (check mockUsernameChecker) IsUsernameUsed(username string) bool {
 }
 
 func TestUserService_RegisterUsernameUsed(t *testing.T) {
-	userService := UserService{
+	userService := RegisterService{
 		UsernameChecker: mockUsernameChecker{isUsedReturn: true},
 	}
 	err := userService.Register(&domain.User{})
@@ -32,7 +32,7 @@ func (check mockEmailChecker) IsEmailUsed(email string) bool {
 }
 
 func TestUserService_RegisterEmailUser(t *testing.T) {
-	userService := UserService{
+	userService := RegisterService{
 		UsernameChecker: mockUsernameChecker{isUsedReturn: false},
 		EmailChecker:    mockEmailChecker{isUsedReturn: true},
 	}
@@ -51,7 +51,7 @@ func (mock mockUserSaver) Save(user *domain.User) {
 }
 
 func TestUserService_Register(t *testing.T) {
-	userService := UserService{
+	userService := RegisterService{
 		UsernameChecker: mockUsernameChecker{isUsedReturn: false},
 		EmailChecker:    mockEmailChecker{isUsedReturn: false},
 		UserSaver:       mockUserSaver{userId: 1},

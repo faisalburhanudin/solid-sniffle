@@ -6,11 +6,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type UserAllGetter struct {
-	Db *sql.DB `inject:""`
+type UserDb struct {
+	Db *sql.DB
 }
 
-func (d *UserAllGetter) Get() []*domain.User {
+// NewUserDb user database handler
+func NewUserDb(db *sql.DB) *UserDb{
+	return &UserDb{db}
+}
+
+// Get user list
+func (d *UserDb) Get() []*domain.User {
 	query := "SELECT id, username, email FROM users ORDER BY id DESC"
 	rows, err := d.Db.Query(query)
 	if err != nil {
@@ -31,11 +37,9 @@ func (d *UserAllGetter) Get() []*domain.User {
 	return users
 }
 
-type UsernameChecker struct {
-	Db *sql.DB `inject:""`
-}
 
-func (d UserAllGetter) IsUsernameUsed(username string) bool {
+// IsUsernameUsed check if username already use
+func (d UserDb) IsUsernameUsed(username string) bool {
 	query := "SELECT username FROM users WHERE username=?"
 	rows, err := d.Db.Query(query, username)
 	if err != nil {
@@ -45,11 +49,9 @@ func (d UserAllGetter) IsUsernameUsed(username string) bool {
 	return rows.Next()
 }
 
-type EmailChecker struct {
-	Db *sql.DB `inject:""`
-}
 
-func (d EmailChecker) IsEmailUsed(email string) bool {
+// IsEmailUsed check if email already use
+func (d UserDb) IsEmailUsed(email string) bool {
 	query := "SELECT email FROM users WHERE email=?"
 	rows, err := d.Db.Query(query, email)
 	if err != nil {
@@ -59,11 +61,9 @@ func (d EmailChecker) IsEmailUsed(email string) bool {
 	return rows.Next()
 }
 
-type UserSaver struct {
-	Db *sql.DB `inject:""`
-}
 
-func (d UserSaver) Save(user *domain.User) {
+// Save new user
+func (d UserDb) Save(user *domain.User) {
 	query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
 	res, err := d.Db.Exec(query, &user.Username, &user.Email, &user.Password)
 	if err != nil {
@@ -76,11 +76,9 @@ func (d UserSaver) Save(user *domain.User) {
 	user.Id = lastInsertId
 }
 
-type UserGetterByUsername struct {
-	Db *sql.DB `inject:""`
-}
 
-func (d UserGetterByUsername) GetByUsername(username string) *domain.User {
+// Get user by username
+func (d UserDb) GetByUsername(username string) *domain.User {
 	query := "SELECT id, username, email FROM users ORDER BY id DESC"
 	rows, err := d.Db.Query(query)
 	if err != nil {

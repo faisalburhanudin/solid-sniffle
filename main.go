@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"github.com/facebookgo/inject"
 	"github.com/faisalburhanudin/solid-sniffle/database"
 	"github.com/faisalburhanudin/solid-sniffle/handler"
 	"github.com/faisalburhanudin/solid-sniffle/service"
@@ -39,35 +38,14 @@ func main() {
 		log.Fatalf("Cannot connect to mysql: %v", err)
 	}
 
-	var g inject.Graph
 	postDb := database.NewPostDb(db)
+	userDb := database.NewUserDb(db)
 
 	postService := service.NewPostService(postDb)
+	registerService := service.NewRegisterService(userDb)
 
 	postHandler := handler.NewPostHandler(postService, templates.TemplateDir())
-
-	var userHandler handler.UserHandler
-
-	// Inject singleton object
-	err = g.Provide(
-		&inject.Object{Value: &database.UserAllGetter{}},
-		&inject.Object{Value: &database.UsernameChecker{}},
-		&inject.Object{Value: &database.EmailChecker{}},
-		&inject.Object{Value: &database.UserSaver{}},
-		&inject.Object{Value: &database.UserGetterByUsername{}},
-		&inject.Object{Value: &service.UserService{}},
-		&inject.Object{Value: &userHandler},
-
-		&inject.Object{Value: db},
-	)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	// Populate dependencies graph
-	if err := g.Populate(); err != nil {
-		log.Panic(err)
-	}
+	userHandler := handler.NewUserHandler(registerService)
 
 	// register routing
 	var routing = []Routing{

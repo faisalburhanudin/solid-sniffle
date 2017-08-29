@@ -30,7 +30,7 @@ func CreateDB(t *testing.T) (*sql.DB, func()) {
 	if dsn == "" {
 		t.Skip("no environment variable DSN_TEST for database testing: skip test")
 	}
-	// Create new connection
+	// Register new connection
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		t.Fatal(err)

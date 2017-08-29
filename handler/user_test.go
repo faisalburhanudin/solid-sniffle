@@ -7,12 +7,12 @@ import (
 	"testing"
 )
 
-func TestUserHandler(t *testing.T) {
+func TestUserHandler_Create_missing_param(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "http://localhost/Register", nil)
 	w := httptest.NewRecorder()
 
 	userHandler := UserHandler{}
-	userHandler.Create(w, req)
+	userHandler.Register(w, req)
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)

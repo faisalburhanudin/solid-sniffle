@@ -33,7 +33,7 @@ func NewPostService(post PostDb) *PostService {
 	return &PostService{post, post, post}
 }
 
-// Create new post
+// Register new post
 func (s PostService) Create(post *domain.Post) {
 	s.PostSaver.Save(post)
 }
