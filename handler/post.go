@@ -23,8 +23,8 @@ func NewPostHandler(postGetter PostGetter, templateDir string) *PostHandler {
 func (h PostHandler) List(w http.ResponseWriter, r *http.Request) {
 	posts := h.PostGetter.GetPosts()
 	paths := []string{
-		h.TemplateDir + "/front-base.tmpl",
-		h.TemplateDir + "/post-list.tmpl",
+		h.TemplateDir + "/front-base.html",
+		h.TemplateDir + "/post-list.html",
 	}
 	tmpl := template.Must(template.ParseFiles(paths...))
 	tmpl.Execute(w, posts)

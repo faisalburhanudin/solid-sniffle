@@ -1,8 +1,8 @@
 package templates
 
 import (
-	"runtime"
 	"path"
+	"runtime"
 )
 
 // TemplateDir get template directory

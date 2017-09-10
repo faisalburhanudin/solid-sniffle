@@ -11,7 +11,7 @@ type UserDb struct {
 }
 
 // NewUserDb user database handler
-func NewUserDb(db *sql.DB) *UserDb{
+func NewUserDb(db *sql.DB) *UserDb {
 	return &UserDb{db}
 }
 
@@ -37,7 +37,6 @@ func (d *UserDb) Get() []*domain.User {
 	return users
 }
 
-
 // IsUsernameUsed check if username already use
 func (d UserDb) IsUsernameUsed(username string) bool {
 	query := "SELECT username FROM users WHERE username=?"
@@ -49,7 +48,6 @@ func (d UserDb) IsUsernameUsed(username string) bool {
 	return rows.Next()
 }
 
-
 // IsEmailUsed check if email already use
 func (d UserDb) IsEmailUsed(email string) bool {
 	query := "SELECT email FROM users WHERE email=?"
@@ -60,7 +58,6 @@ func (d UserDb) IsEmailUsed(email string) bool {
 	defer rows.Close()
 	return rows.Next()
 }
-
 
 // Save new user
 func (d UserDb) Save(user *domain.User) {
@@ -75,7 +72,6 @@ func (d UserDb) Save(user *domain.User) {
 	}
 	user.Id = lastInsertId
 }
-
 
 // Get user by username
 func (d UserDb) GetByUsername(username string) *domain.User {

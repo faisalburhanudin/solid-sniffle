@@ -1,11 +1,11 @@
 package database
 
 import (
-	"testing"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/faisalburhanudin/solid-sniffle/domain"
 	test "github.com/faisalburhanudin/solid-sniffle/testing"
+	_ "github.com/go-sql-driver/mysql"
 	"reflect"
+	"testing"
 )
 
 func TestPostDb_GetPosts(t *testing.T) {
@@ -16,7 +16,7 @@ func TestPostDb_GetPosts(t *testing.T) {
 	posts := postDb.GetPosts()
 
 	want := []domain.Post{}
-	if reflect.DeepEqual(posts, want) != true{
+	if reflect.DeepEqual(posts, want) != true {
 		t.Errorf("got %v: want %v", posts, want)
 	}
 }

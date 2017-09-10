@@ -5,11 +5,11 @@ import (
 	"github.com/faisalburhanudin/solid-sniffle/database"
 	"github.com/faisalburhanudin/solid-sniffle/handler"
 	"github.com/faisalburhanudin/solid-sniffle/service"
+	"github.com/faisalburhanudin/solid-sniffle/templates"
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
-	"github.com/faisalburhanudin/solid-sniffle/templates"
 )
 
 func httpLog(h http.HandlerFunc) http.HandlerFunc {
@@ -45,10 +45,11 @@ func main() {
 	registerService := service.NewRegisterService(userDb)
 
 	postHandler := handler.NewPostHandler(postService, templates.TemplateDir())
-	userHandler := handler.NewUserHandler(registerService)
+	userHandler := handler.NewUserHandler(registerService, templates.TemplateDir())
 
 	// register routing
 	var routing = []Routing{
+		{"/register", userHandler.Register, []string{"GET", "POST"}},
 		{"/", postHandler.List, []string{"GET"}},
 		{"/user", userHandler.User, []string{"GET", "POST"}},
 	}

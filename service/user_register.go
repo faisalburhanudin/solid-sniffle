@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/faisalburhanudin/solid-sniffle/domain"
 	"errors"
+	"github.com/faisalburhanudin/solid-sniffle/domain"
 )
 
 type UsernameChecker interface {
@@ -38,7 +38,6 @@ type RegisterRepository interface {
 func NewRegisterService(repository RegisterRepository) *RegisterService {
 	return &RegisterService{repository, repository, repository}
 }
-
 
 // Register new user
 // this function will check if username already use or

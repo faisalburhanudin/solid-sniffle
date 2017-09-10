@@ -2,13 +2,13 @@ package testing
 
 import (
 	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
+	"os"
+	"path"
+	"runtime"
 	"strings"
 	"testing"
-	"os"
-	_ "github.com/go-sql-driver/mysql"
-	"runtime"
-	"path"
 )
 
 var SQL_PATH string
